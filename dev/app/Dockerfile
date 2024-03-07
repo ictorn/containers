@@ -1,6 +1,8 @@
-FROM dunglas/frankenphp:1.1.0-php8.3.2-alpine
+FROM dunglas/frankenphp:1.1.0-php8.3.3-alpine
 
-RUN set -xe && install-php-extensions opcache sockets pcntl pdo_pgsql gd decimal intl zip
+COPY --from=postgres:15-alpine /usr/local/bin/pg_dump /usr/local/bin/pg_dump
+
+RUN set -xe && install-php-extensions opcache sockets pcntl pdo_pgsql pdo_sqlite gd decimal intl zip
 
 COPY config/php.ini /usr/local/etc/php/php.ini
 COPY config/Caddyfile /etc/caddy/Caddyfile
