@@ -9,67 +9,23 @@ permissions:
   contents: read
   packages: write
 
-env:
-  REGISTRY_IMAGE: ghcr.io/${{ github.repository_owner }}/dev
-
 jobs:
   app:
-    timeout-minutes: 15
+    timeout-minutes: 10
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        platform:
-        - linux/amd64
-        - linux/arm64
-    name: build base images for app
+    name: build base image for app
     steps:
-    - name: prepare
-      run: |
-        platform=${{ matrix.platform }}
-        echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
     - name: checkout repository
       uses: actions/checkout@v4
-    - name: docker metadata
-      id: meta
-      uses: docker/metadata-action@v5
-      with:
-        images: ${{ env.REGISTRY_IMAGE }}
-    - name: set up QEMU
-      uses: docker/setup-qemu-action@v3
-    - name: set up Docker buildX
-      uses: docker/setup-buildx-action@v3
     - name: login to ghcr.io
       uses: docker/login-action@v3
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-#    - name: build and push image
-#      uses: docker/build-push-action@v5
-#      with:
-#        context: ./dev/app
-#        platforms: linux/amd64,linux/arm64
-#        push: true
-#        tags: ghcr.io/${{ github.repository_owner }}/dev:app
-    - name: build and push by digest
-      id: build
+    - name: build and push image
       uses: docker/build-push-action@v5
       with:
         context: ./dev/app
-        platforms: ${{ matrix.platform }}
-        labels: ${{ steps.meta.outputs.labels }}
-        outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
-    - name: export digest
-      run: |
-        mkdir -p /tmp/digests
-        digest="${{ steps.build.outputs.digest }}"
-        touch "/tmp/digests/${digest#sha256:}"
-    - name: upload digest
-      uses: actions/upload-artifact@v4
-      with:
-        name: digests-${{ env.PLATFORM_PAIR }}
-        path: /tmp/digests/*
-        if-no-files-found: error
-        retention-days: 1
-
+        push: true
+        tags: ghcr.io/${{ github.repository_owner }}/dev:app
