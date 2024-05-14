@@ -1,12 +1,13 @@
-FROM dunglas/frankenphp:1.1.4-php8.3.6-alpine
+FROM dunglas/frankenphp:1.1.5-php8.3.7-alpine
 
 COPY --from=postgres:15-alpine /usr/local/bin/pg_dump /usr/local/bin/pg_dump
 
-RUN set -xe && install-php-extensions opcache sockets pcntl pdo_pgsql pdo_sqlite gd decimal bcmath intl zip \
- && chmod 777 /etc/caddy
+RUN set -xe \
+ && install-php-extensions opcache sockets pcntl pdo_pgsql pdo_sqlite gd decimal bcmath intl zip \
+ && setcap -r /usr/local/bin/frankenphp
 
 COPY config/php.ini /usr/local/etc/php/php.ini
-COPY config/Caddyfile /etc/caddy/Caddyfile
+COPY config/Caddyfile /config/Caddyfile
 
 HEALTHCHECK NONE
 
