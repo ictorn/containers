@@ -12,6 +12,6 @@ COPY config/Caddyfile /config/Caddyfile
 HEALTHCHECK NONE
 
 ENTRYPOINT ["/usr/local/bin/frankenphp"]
-CMD ["run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
+CMD ["run", "--config", "/config/Caddyfile", "--adapter", "caddyfile"]
 
 EXPOSE 8443
