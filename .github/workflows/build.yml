@@ -10,10 +10,10 @@ permissions:
   packages: write
 
 jobs:
-  app:
+  dev-server:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    name: build base image for app
+    name: build server image
     steps:
     - name: checkout repository
       uses: actions/checkout@v4
@@ -26,6 +26,6 @@ jobs:
     - name: build and push image
       uses: docker/build-push-action@v5
       with:
-        context: ./dev/app
+        context: ./dev/server
         push: true
-        tags: ghcr.io/${{ github.repository_owner }}/dev:app
+        tags: ghcr.io/${{ github.repository_owner }}/dev:server
