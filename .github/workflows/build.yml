@@ -10,22 +10,23 @@ permissions:
   packages: write
 
 jobs:
-  dev-server:
-    timeout-minutes: 10
+  nfs-server:
+    timeout-minutes: 5
     runs-on: ubuntu-latest
     name: build server image
     steps:
     - name: checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
     - name: login to ghcr.io
-      uses: docker/login-action@v3
+      uses: docker/login-action@v4
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: build and push image
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
-        context: ./dev/server
+        context: ./nfs-server
+        file: Containerfile
         push: true
-        tags: ghcr.io/${{ github.repository_owner }}/dev:server
+        tags: ghcr.io/${{ github.repository_owner }}/nfs:server

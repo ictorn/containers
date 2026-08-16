@@ -1,0 +1,4 @@
+FROM alpine:3
+RUN apk add --no-cache nfs-utils
+EXPOSE 2049/tcp 2049/udp 111/tcp 111/udp
+CMD ["/bin/sh", "-c", "rpcbind -w || true; rpc.mountd --no-udp; exec rpc.nfsd --no-udp -d 8 2049"]
