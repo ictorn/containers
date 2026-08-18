@@ -1,5 +1,0 @@
-FROM debian:trixie-slim
-RUN apt-get update && apt-get install -y --no-install-recommends nfs-ganesha nfs-ganesha-vfs && rm -rf /var/lib/apt/lists/*
-RUN mkdir -p /var/lib/nfs/ganesha /var/run/ganesha
-EXPOSE 2049/tcp
-ENTRYPOINT ["/usr/bin/ganesha.nfsd", "-F", "-L", "STDOUT", "-f", "/etc/ganesha/ganesha.conf"]
